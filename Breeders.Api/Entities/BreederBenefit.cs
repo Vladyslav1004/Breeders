@@ -1,0 +1,10 @@
+﻿namespace Breeders.Api.Entities;
+
+public class BreederBenefit
+{
+    public Guid BreederId { get; set; }
+
+    public int FreeLimit { get; set; }
+
+    public int UsedCount { get; set; }
+}
