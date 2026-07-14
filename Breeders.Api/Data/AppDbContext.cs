@@ -1,4 +1,4 @@
-﻿using Breeders.Api.Entities;
+﻿using Breeders.Api.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace Breeders.Api.Data;

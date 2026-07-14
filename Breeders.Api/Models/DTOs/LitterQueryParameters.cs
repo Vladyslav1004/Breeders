@@ -1,6 +1,6 @@
 ﻿using Breeders.Api.Enums;
 
-namespace Breeders.Api.DTOs;
+namespace Breeders.Api.Models.DTOs;
 
 public class LitterQueryParameters
 {

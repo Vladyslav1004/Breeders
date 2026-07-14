@@ -1,6 +1,7 @@
 ﻿using Breeders.Api.Data;
-using Breeders.Api.DTOs;
 using Breeders.Api.Exceptions;
+using Breeders.Api.Models;
+using Breeders.Api.Models.DTOs;
 using Breeders.Api.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
@@ -102,7 +103,7 @@ public class LitterService : ILitterService
 
         if (benefit.UsedCount >= benefit.FreeLimit)
         {
-            var failedAuditLog = new Entities.AuditLog
+            var failedAuditLog = new AuditLog
             {
                 EntityId = litter.Id,
                 Action = "Publish attempt failed - limits exceeded",
@@ -120,7 +121,7 @@ public class LitterService : ILitterService
         benefit.UsedCount++;
         litter.Status = Enums.LitterStatus.Published;
 
-        var successAuditLog = new Entities.AuditLog
+        var successAuditLog = new AuditLog
         {
             EntityId = litter.Id,
             Action = "Published for free",

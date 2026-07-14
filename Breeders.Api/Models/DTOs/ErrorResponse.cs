@@ -1,4 +1,4 @@
-﻿namespace Breeders.Api.DTOs;
+﻿namespace Breeders.Api.Models.DTOs;
 
 public class ErrorResponse
 {

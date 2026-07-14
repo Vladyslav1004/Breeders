@@ -1,4 +1,4 @@
-﻿using Breeders.Api.DTOs;
+﻿using Breeders.Api.Models.DTOs;
 using Breeders.Api.Exceptions;
 
 namespace Breeders.Api.Middleware;

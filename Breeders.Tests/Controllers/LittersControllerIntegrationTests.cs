@@ -1,11 +1,11 @@
 ﻿using System.Net;
 using System.Net.Http.Json;
-using Breeders.Api.DTOs;
 using Breeders.Api.Enums;
 using Breeders.Tests.Helpers;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Xunit;
+using Breeders.Api.Models.DTOs;
 
 namespace Breeders.Tests.Controllers;
 

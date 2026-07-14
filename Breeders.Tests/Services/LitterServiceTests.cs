@@ -1,6 +1,6 @@
 ﻿using Breeders.Api.Data;
-using Breeders.Api.DTOs;
-using Breeders.Api.Entities;
+using Breeders.Api.Models;
+using Breeders.Api.Models.DTOs;
 using Breeders.Api.Enums;
 using Breeders.Api.Exceptions;
 using Breeders.Api.Services;

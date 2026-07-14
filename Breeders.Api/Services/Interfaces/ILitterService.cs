@@ -1,4 +1,4 @@
-﻿using Breeders.Api.DTOs;
+﻿using Breeders.Api.Models.DTOs;
 
 namespace Breeders.Api.Services.Interfaces;
 

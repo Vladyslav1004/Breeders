@@ -1,6 +1,6 @@
 ﻿using Breeders.Api.Enums;
 
-namespace Breeders.Api.Entities;
+namespace Breeders.Api.Models;
 
 public class Litter
 {
