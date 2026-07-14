@@ -8,32 +8,78 @@ public static class DatabaseSeeder
     {
         using var scope = app.Services.CreateScope();
 
-        var context = scope.ServiceProvider
-            .GetRequiredService<AppDbContext>();
+        var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
+        var loggerFactory = scope.ServiceProvider.GetRequiredService<ILoggerFactory>();
+
+        var logger = loggerFactory.CreateLogger("DatabaseSeeder");
 
         await context.Database.EnsureCreatedAsync();
 
-        // Seed data додаються лише тоді, коли відповідні
-        // таблиці ще не містять записів.
-        // Це захищає програму від повторного додавання
-        // однакових тестових даних.
+        var databaseAlreadyContainsData =
+            await context.BreederBenefits.AnyAsync() ||
+            await context.Litters.AnyAsync();
 
-        if (!await context.BreederBenefits.AnyAsync())
+        if (databaseAlreadyContainsData)
         {
-            var benefits =
-                DevelopmentSeedData.CreateBreederBenefits();
+            logger.LogInformation(
+                "Seed data were not added because the database already contains data.");
 
-            await context.BreederBenefits.AddRangeAsync(benefits);
+            return;
         }
 
-        if (!await context.Litters.AnyAsync())
-        {
-            var litters = DevelopmentSeedData.CreateLitters(
-                DateTime.UtcNow);
+        var modeValue =
+            app.Configuration["SeedData:Mode"]
+            ?? SeedDataMode.Fixed.ToString();
 
-            await context.Litters.AddRangeAsync(litters);
+        if (!Enum.TryParse<SeedDataMode>(
+                modeValue,
+                ignoreCase: true,
+                out var mode))
+        {
+            throw new InvalidOperationException(
+                $"Unknown seed data mode '{modeValue}'. " +
+                "Allowed values: Fixed or Generated.");
         }
+
+        var seedData = DevelopmentSeedData.Create(
+            mode,
+            DateTime.UtcNow);
+
+        await context.BreederBenefits.AddRangeAsync(
+            seedData.BreederBenefits);
+
+        await context.Litters.AddRangeAsync(
+            seedData.Litters);
 
         await context.SaveChangesAsync();
+
+        logger.LogInformation(
+            "Development seed data created in {Mode} mode.",
+            mode);
+
+        logger.LogInformation(
+            "Primary breeder: {PrimaryBreederId}",
+            seedData.PrimaryBreederId);
+
+        logger.LogInformation(
+            "Approved litter: {ApprovedLitterId}",
+            seedData.ApprovedLitterId);
+
+        logger.LogInformation(
+            "Draft litter: {DraftLitterId}",
+            seedData.DraftLitterId);
+
+        logger.LogInformation(
+            "Submitted litter: {SubmittedLitterId}",
+            seedData.SubmittedLitterId);
+
+        logger.LogInformation(
+            "Second breeder: {SecondBreederId}",
+            seedData.SecondBreederId);
+
+        logger.LogInformation(
+            "Second breeder approved litter: {OtherBreederLitterId}",
+            seedData.OtherBreederLitterId);
     }
 }

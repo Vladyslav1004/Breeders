@@ -7,15 +7,15 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace Breeders.Tests.Helpers;
 
-public class CustomWebApplicationFactory
-    : WebApplicationFactory<Program>
+public class CustomWebApplicationFactory : WebApplicationFactory<Program>
 {
     private readonly string _databaseName =
         $"BreedersIntegrationTests-{Guid.NewGuid()}";
 
-    protected override void ConfigureWebHost(
-        IWebHostBuilder builder)
+    protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
+        builder.UseSetting("SeedData:Mode", SeedDataMode.Fixed.ToString());
+
         builder.ConfigureServices(services =>
         {
             services.RemoveAll<AppDbContext>();

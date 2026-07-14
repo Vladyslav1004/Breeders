@@ -5,99 +5,133 @@ namespace Breeders.Api.Data;
 
 public static class DevelopmentSeedData
 {
-    // Фіксовані ідентифікатори використовуються для того,
-    // щоб дані були передбачуваними після кожного запуску.
-    // Завдяки цьому перевіряльник може копіювати ці ID
-    // у Swagger без пошуку випадково створених GUID.
-
-    public static readonly Guid TestBreederId =
-        Guid.Parse("11111111-1111-1111-1111-111111111111");
-
-    public static readonly Guid SecondBreederId =
-        Guid.Parse("22222222-2222-2222-2222-222222222222");
-
-    public static readonly Guid ApprovedLitterId =
-        Guid.Parse("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa");
-
-    public static readonly Guid DraftLitterId =
-        Guid.Parse("bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb");
-
-    public static readonly Guid SubmittedLitterId =
-        Guid.Parse("cccccccc-cccc-cccc-cccc-cccccccccccc");
-
-    public static readonly Guid OtherBreederLitterId =
-        Guid.Parse("dddddddd-dddd-dddd-dddd-dddddddddddd");
-
-    // Перший заводчик використовується для перевірки
-    // успішної безкоштовної публікації.
-    //
-    // Другий заводчик уже використав увесь ліміт,
-    // тому він потрібен для перевірки помилки limits exceeded.
-
-    public static IReadOnlyCollection<BreederBenefit>
-        CreateBreederBenefits()
+    public static class FixedIds
     {
-        return new List<BreederBenefit>
+        public static readonly Guid PrimaryBreederId =
+            Guid.Parse(
+                "11111111-1111-1111-1111-111111111111");
+
+        public static readonly Guid SecondBreederId =
+            Guid.Parse(
+                "22222222-2222-2222-2222-222222222222");
+
+        public static readonly Guid ApprovedLitterId =
+            Guid.Parse(
+                "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa");
+
+        public static readonly Guid DraftLitterId =
+            Guid.Parse(
+                "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb");
+
+        public static readonly Guid SubmittedLitterId =
+            Guid.Parse(
+                "cccccccc-cccc-cccc-cccc-cccccccccccc");
+
+        public static readonly Guid OtherBreederLitterId =
+            Guid.Parse(
+                "dddddddd-dddd-dddd-dddd-dddddddddddd");
+    }
+
+    public static SeedDataSet Create(SeedDataMode mode, DateTime currentUtcTime)
+    {
+        return mode switch
+        {
+            SeedDataMode.Fixed => CreateWithIds(
+                FixedIds.PrimaryBreederId,
+                FixedIds.SecondBreederId,
+                FixedIds.ApprovedLitterId,
+                FixedIds.DraftLitterId,
+                FixedIds.SubmittedLitterId,
+                FixedIds.OtherBreederLitterId,
+                currentUtcTime),
+
+            SeedDataMode.Generated => CreateWithIds(
+                Guid.NewGuid(),
+                Guid.NewGuid(),
+                Guid.NewGuid(),
+                Guid.NewGuid(),
+                Guid.NewGuid(),
+                Guid.NewGuid(),
+                currentUtcTime),
+
+            _ => throw new ArgumentOutOfRangeException(
+                nameof(mode),
+                mode,
+                "Unsupported seed data mode.")
+        };
+    }
+
+    private static SeedDataSet CreateWithIds(
+        Guid primaryBreederId,
+        Guid secondBreederId,
+        Guid approvedLitterId,
+        Guid draftLitterId,
+        Guid submittedLitterId,
+        Guid otherBreederLitterId,
+        DateTime currentUtcTime)
+    {
+        var benefits = new List<BreederBenefit>
         {
             new()
             {
-                BreederId = TestBreederId,
+                BreederId = primaryBreederId,
                 FreeLimit = 3,
                 UsedCount = 0
             },
 
             new()
             {
-                BreederId = SecondBreederId,
+                BreederId = secondBreederId,
                 FreeLimit = 1,
                 UsedCount = 1
             }
         };
-    }
 
-    // Виводки з різними статусами дозволяють перевірити:
-    // 1. Успішну публікацію Approved.
-    // 2. Помилку для Draft.
-    // 3. Помилку для Submitted.
-    // 4. Перевірку власника.
-    // 5. Перевищення безкоштовного ліміту.
-
-    public static IReadOnlyCollection<Litter> CreateLitters(
-        DateTime currentUtcTime)
-    {
-        return new List<Litter>
+        var litters = new List<Litter>
         {
             new()
             {
-                Id = ApprovedLitterId,
-                BreederId = TestBreederId,
+                Id = approvedLitterId,
+                BreederId = primaryBreederId,
                 Status = LitterStatus.Approved,
                 CreatedAt = currentUtcTime.AddDays(-3)
             },
 
             new()
             {
-                Id = DraftLitterId,
-                BreederId = TestBreederId,
+                Id = draftLitterId,
+                BreederId = primaryBreederId,
                 Status = LitterStatus.Draft,
                 CreatedAt = currentUtcTime.AddDays(-2)
             },
 
             new()
             {
-                Id = SubmittedLitterId,
-                BreederId = TestBreederId,
+                Id = submittedLitterId,
+                BreederId = primaryBreederId,
                 Status = LitterStatus.Submitted,
                 CreatedAt = currentUtcTime.AddDays(-1)
             },
 
             new()
             {
-                Id = OtherBreederLitterId,
-                BreederId = SecondBreederId,
+                Id = otherBreederLitterId,
+                BreederId = secondBreederId,
                 Status = LitterStatus.Approved,
                 CreatedAt = currentUtcTime
             }
+        };
+
+        return new SeedDataSet
+        {
+            PrimaryBreederId = primaryBreederId,
+            SecondBreederId = secondBreederId,
+            ApprovedLitterId = approvedLitterId,
+            DraftLitterId = draftLitterId,
+            SubmittedLitterId = submittedLitterId,
+            OtherBreederLitterId = otherBreederLitterId,
+            BreederBenefits = benefits,
+            Litters = litters
         };
     }
 }

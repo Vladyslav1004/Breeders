@@ -27,8 +27,7 @@ public class LitterService : ILitterService
     {
         ValidatePagination(parameters);
 
-        var query = _context.Litters
-            .AsNoTracking()
+        var query = _context.Litters.AsNoTracking()
             .Where(litter => litter.BreederId == breederId);
 
         if (parameters.Status.HasValue)

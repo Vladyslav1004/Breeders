@@ -1,11 +1,12 @@
-﻿using System.Net;
-using System.Net.Http.Json;
+﻿using Breeders.Api.Data;
 using Breeders.Api.Enums;
+using Breeders.Api.Models.DTOs;
 using Breeders.Tests.Helpers;
+using System.Net;
+using System.Net.Http.Json;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Xunit;
-using Breeders.Api.Models.DTOs;
 
 namespace Breeders.Tests.Controllers;
 
@@ -26,24 +27,19 @@ public class LittersControllerIntegrationTests
     }
 
     private static readonly Guid TestBreederId =
-        Guid.Parse(
-            "11111111-1111-1111-1111-111111111111");
+    DevelopmentSeedData.FixedIds.PrimaryBreederId;
 
     private static readonly Guid SecondBreederId =
-        Guid.Parse(
-            "22222222-2222-2222-2222-222222222222");
+        DevelopmentSeedData.FixedIds.SecondBreederId;
 
     private static readonly Guid ApprovedLitterId =
-        Guid.Parse(
-            "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa");
+        DevelopmentSeedData.FixedIds.ApprovedLitterId;
 
     private static readonly Guid DraftLitterId =
-        Guid.Parse(
-            "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb");
+        DevelopmentSeedData.FixedIds.DraftLitterId;
 
     private static readonly Guid OtherBreederLitterId =
-        Guid.Parse(
-            "dddddddd-dddd-dddd-dddd-dddddddddddd");
+        DevelopmentSeedData.FixedIds.OtherBreederLitterId;
 
     [Fact]
     public async Task GetLitters_WithoutHeader_ReturnsUnauthorized()

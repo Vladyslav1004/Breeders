@@ -5,8 +5,7 @@ namespace Breeders.Api.Data;
 
 public class AppDbContext : DbContext
 {
-    public AppDbContext(DbContextOptions<AppDbContext> options)
-        : base(options)
+    public AppDbContext(DbContextOptions<AppDbContext> options): base(options)
     {
     }
 
@@ -20,7 +19,6 @@ public class AppDbContext : DbContext
     {
         base.OnModelCreating(modelBuilder);
 
-        modelBuilder.Entity<BreederBenefit>()
-            .HasKey(benefit => benefit.BreederId);
+        modelBuilder.Entity<BreederBenefit>().HasKey(benefit => benefit.BreederId);
     }
 }
